@@ -32,6 +32,16 @@ def is_same_kana(word: str, sample: str) -> bool:
 def is_same_word(word: str, word_reading: str, sample: str, sample_reading: str) -> bool:
     return word == sample and word_reading == sample_reading
 
+def remove_kanji_from_reading(reading: str) -> str:
+    res = ''
+    for char in reading:
+        if u'\u3040' <= char <= u'\u309F':
+            res += char
+
+    first_reading = res.split(",")[0].strip()
+
+    return first_reading if res != '' else reading
+
 def populate_frequency(col: Collection) -> None:
     if "add_frequencies" not in mw.addonManager.getConfig(__name__) or FREQUENCY_DATA == None:
         return
@@ -49,7 +59,8 @@ def populate_frequency(col: Collection) -> None:
 
         # Loop through and get entry with identical word and reading, use `value` field
         for sample_word, _, sample_readings in FREQUENCY_DATA:
-            if "reading" in sample_readings and is_same_word(word, reading, sample_word, sample_readings["reading"]):
+            if "reading" in sample_readings and (is_same_word(word, reading, sample_word, sample_readings["reading"]) or
+                    is_same_word(word, remove_kanji_from_reading(reading), sample_word, sample_readings["reading"])):
                 note[FREQUENCY_FIELD] = str(sample_readings["frequency"]["value"])
                 break
             elif "reading" not in sample_readings and is_same_kana(word, sample_word):
