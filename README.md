@@ -1,7 +1,7 @@
 # FieldReporter - Language Learning with Anki Automated
 
 ### Forked Changes
-* Add support for furigana readings with brackets. Eg. 読[よ]む
+* Add support for furigana readings with brackets or ruby text. Eg. 読[よ]む
 
 ### Original
 
